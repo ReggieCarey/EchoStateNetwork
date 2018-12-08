@@ -56,7 +56,7 @@ class Neuron:
                  f: callable = None,
                  g: callable = None,
                  feedback: bool = True
-                 ):
+                 ) -> None:
         """
         Initialize the neuron with the architecture defined by the parameters
 
