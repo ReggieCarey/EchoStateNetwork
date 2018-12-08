@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fa1229c-d8c5-463d-827f-28ae98501793" name="Default Changelist" comment="˚">
-      <change beforePath="$PROJECT_DIR$/.idea/EchoStateNetworks.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/EchoStateNetworks.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="5fa1229c-d8c5-463d-827f-28ae98501793" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ESNeuron/Neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/ESNeuron/Neuron.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ESNeuron/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/ESNeuron/Untitled.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/.idea/EchoStateNetworks.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/ESNeuron/Neuron.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EchoStateNetworks/ESNeuron/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ESNeuron/Untitled.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ESNeuron/esn_parameters.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/ESNeuron/esn_parameters.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ESNeuron/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ESNeuron/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../matlab" beforeDir="false" afterPath="$PROJECT_DIR$/../matlab" afterDir="false" />
     </list>
+    <ignored mask="*.png" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +16,8 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/EchoStateNetwork$Neuron.coverage" NAME="Neuron Coverage Results" MODIFIED="1544289881327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ESNeuron" />
+    <SUITE FILE_PATH="coverage/EchoStateNetwork$main.coverage" NAME="main Coverage Results" MODIFIED="1544292602057" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ESNeuron" />
+    <SUITE FILE_PATH="coverage/EchoStateNetwork$Neuron.coverage" NAME="Neuron Coverage Results" MODIFIED="1544292217721" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ESNeuron" />
     <SUITE FILE_PATH="coverage/EchoStateNetworks$Neuron.coverage" NAME="Neuron Coverage Results" MODIFIED="1544158276527" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ESNeuron" />
   </component>
   <component name="DatabaseView">
@@ -45,15 +36,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ESNeuron/Neuron.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="53">
-              <caret line="176" column="9" selection-start-line="176" selection-start-column="9" selection-end-line="176" selection-end-column="9" />
+            <state relative-caret-position="164">
+              <caret line="236" column="7" lean-forward="true" selection-start-line="236" selection-start-column="7" selection-end-line="236" selection-end-column="7" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
                 <element signature="e#54#2214#1" expanded="true" />
-                <element signature="e#8640#11139#0" expanded="true" />
                 <element signature="e#8426#10237#1" />
               </folding>
             </state>
@@ -61,11 +51,18 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ESNeuron/esn.png">
+          <provider selected="true" editor-type-id="images" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ESNeuron/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-7">
+            <state relative-caret-position="372">
+              <caret line="70" column="21" lean-forward="true" selection-start-line="70" selection-start-column="21" selection-end-line="70" selection-end-column="21" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
+                <element signature="e#95#1838#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -95,8 +92,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/ESNeuron/Untitled.ipynb" />
         <option value="$PROJECT_DIR$/ESNeuron/Neuron.py" />
+        <option value="$PROJECT_DIR$/ESNeuron/Untitled.ipynb" />
+        <option value="$PROJECT_DIR$/ESNeuron/main.py" />
       </list>
     </option>
   </component>
@@ -168,7 +166,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.main">
     <configuration name="Neuron" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="EchoStateNetworks" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -213,8 +211,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="EchoStateNetworks" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ESNeuron" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ESNeuron/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.Neuron" />
       </list>
     </recent_temporary>
@@ -230,33 +248,42 @@
       <option name="presentableId" value="Default" />
       <updated>1543970278219</updated>
       <workItem from="1543970280732" duration="57897000" />
-      <workItem from="1544289108714" duration="2835000" />
+      <workItem from="1544289108714" duration="3439000" />
     </task>
+    <task id="LOCAL-00001" summary="documentation cleanup">
+      <created>1544292142598</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1544292142598</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="60732000" />
+    <option name="totallyTimeSpent" value="61336000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="6" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.15593705" />
+      <window_info content_ui="combo" id="Project" order="2" visible="true" weight="0.15593705" />
+      <window_info anchor="bottom" id="Concurrent Activities Diagram" sideWeight="0.49785408" weight="0.32939634" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32939634" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49928468" visible="true" weight="0.24146982" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4985694" weight="0.24146982" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="8" sideWeight="0.49928468" visible="true" weight="0.32939634" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007153" side_tool="true" weight="0.24146982" />
-      <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info anchor="bottom" id="Python Console" order="12" weight="0.24015749" />
-      <window_info anchor="right" x="0" y="0" width="310" height="677" id="Documentation" sideWeight="0.50086355" side_tool="true" visible="true" weight="0.3297568" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007153" side_tool="true" weight="0.24015749" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49928468" weight="0.32939634" />
+      <window_info anchor="bottom" id="Python Console" order="12" sideWeight="0.57868385" weight="0.24015749" />
+      <window_info anchor="bottom" x="0" y="0" width="310" height="677" id="Documentation" order="13" sideWeight="0.5007153" side_tool="true" visible="true" weight="0.32939634" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -266,6 +293,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="documentation cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="documentation cleanup" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file:///usr/local/lib/python3.6/site-packages/numpy/core/fromnumeric.py">
@@ -292,7 +323,6 @@
     <entry file="file://$PROJECT_DIR$/ESNeuron/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/ESNeuron/esn.png" />
     <entry file="file://$PROJECT_DIR$/ESNeuron/Untitled.ipynb">
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
@@ -300,24 +330,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ESNeuron/main.py">
+    <entry file="file://$PROJECT_DIR$/ESNeuron/Neuron.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7">
+        <state relative-caret-position="164">
+          <caret line="236" column="7" lean-forward="true" selection-start-line="236" selection-start-column="7" selection-end-line="236" selection-end-column="7" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#54#2214#1" expanded="true" />
+            <element signature="e#8426#10237#1" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ESNeuron/Neuron.py">
+    <entry file="file://$PROJECT_DIR$/ESNeuron/esn.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ESNeuron/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="53">
-          <caret line="176" column="9" selection-start-line="176" selection-start-column="9" selection-end-line="176" selection-end-column="9" />
+        <state relative-caret-position="372">
+          <caret line="70" column="21" lean-forward="true" selection-start-line="70" selection-start-column="21" selection-end-line="70" selection-end-column="21" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#54#2214#1" expanded="true" />
-            <element signature="e#8640#11139#0" expanded="true" />
-            <element signature="e#8426#10237#1" />
+            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#95#1838#0" expanded="true" />
           </folding>
         </state>
       </provider>

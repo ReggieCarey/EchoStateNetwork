@@ -15,7 +15,7 @@ def main():
     inp = np.ones(n.K)
 
     for i in range(cnt):
-        if i < cnt * 0 // 8 or i > cnt * 4 // 8:
+        if i < cnt * 0 // 8 or i > cnt * 8 // 8:
             n.cycle()
         else:
             inp[0] = np.sin(np.pi * i / 20)
@@ -71,3 +71,4 @@ if __name__ == "__main__":
     print("Starting")
     main()
     print("Done")
+    exit(0)
