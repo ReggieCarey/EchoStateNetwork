@@ -1,26 +1,27 @@
-import numpy as np
 import pickle
+
+import numpy as np
 
 
 class Neuron:
     """
     In the framework of the Echo State Neuron, an individual neuron is vastly more complicated and capable than
-    traditional neural network nodes.  In the traditional case the dot product of an input vector and a learned weight
-    vector plus a bias are passed through some non linearity (or not) to produce the neuron's activation.  The
+    traditional neural network nodes.  In the traditional case the dot product of an input vector and a learned
+    weight vector plus a bias are passed through some non linearity (or not) to produce the neuron's activation.  The
     formulation is thus:
 
     $$ a_{out} = \sigma(\vec{a_{in}} \cdot \vec{w} + b) $$
 
     The basic problem with this is that it is static. It completely misses the dynamics possible in a real neuron and
-    does now allow for spatio temporal receptive field mapping without playing with approximations of time, etc. And
-    even then, the output really does not vary based on the input to the system.
+    does now allow for spatio temporal receptive field mapping without playing with approximations of time,
+    etc. And even then, the output really does not vary based on the input to the system.
 
-    I propose an ESNeuron.  The ESNeuron gets its name from echo state networks.  In an ESNeuron multiple inputs still
-    exist and there is a single output.  The distinction comes when everything else is considered.  In an ESNeuron the
-    inputs are fully connected to a dynamical pool.  If we assume learning or processing occurs in the dendritic arbor
-    of a neuron, then the dynamical pool is an analog to the dendritic arbor.  We can likewise assume that the axon
-    hillock is the integration point in a neuron. In this case, our ESNeuron performs a linear transformation with the
-    reservior resulting in a value taken to be the ESNeuron activation.
+    I propose an ESNeuron.  The ESNeuron gets its name from echo state networks.  In an ESNeuron multiple inputs
+    still exist and there is a single output.  The distinction comes when everything else is considered.  In an
+    ESNeuron the inputs are fully connected to a dynamical pool.  If we assume learning or processing occurs in the
+    dendritic arbor of a neuron, then the dynamical pool is an analog to the dendritic arbor.  We can likewise assume
+    that the axon hillock is the integration point in a neuron. In this case, our ESNeuron performs a linear
+    transformation with the reservior resulting in a value taken to be the ESNeuron activation.
 
     The final step in the system is to connect the output via fixed weights to the reservoir.  Because we're passing
     through an echo state network, our output is not entirely driven by the input to the system but works with inputs
@@ -32,6 +33,18 @@ class Neuron:
 
     Given the above there are several parameters that decide the ESNeuron:
     """
+
+    __version__ = "0.9"
+
+    @classmethod
+    def load(cls):
+        try:
+            with open("esn_parameters.pkl", "rb") as inp:
+                x = pickle.load(inp)
+            assert isinstance(x, cls), "Pickled object is not a {}".format(cls)
+            return x
+        except FileNotFoundError:
+            return None
 
     def __init__(self,
                  numInputs: int = 0,
@@ -77,10 +90,10 @@ class Neuron:
         # The number of interations to retain in u, y and u.
         self.history = 1000
 
-        self.u = np.zeros((self.history,self.K))
-        self.x = np.zeros((self.history,self.N))
-        self.y = np.zeros((self.history,self.L))
-        self.d = np.zeros((self.history,self.L))
+        self.u = np.zeros((self.history, self.K))
+        self.x = np.zeros((self.history, self.N))
+        self.y = np.zeros((self.history, self.L))
+        self.d = np.zeros((self.history, self.L))
 
         # Calculate the fixed random weights of the input layer
         self.W_in = np.random.randn(self.N, self.K)
@@ -142,32 +155,23 @@ class Neuron:
     def identity(z: np.ndarray) -> np.ndarray:
         return z
 
-    @staticmethod
-    def load():
-        try:
-            with open("esn_parameters.pkl", "rb") as inp:
-                x = pickle.load(inp)
-            return x
-        except FileNotFoundError:
-            return None
-
-    def save(self):
+    def save(self) -> None:
         with open("esn_parameters.pkl", "wb") as out:
             pickle.dump(self, out, pickle.HIGHEST_PROTOCOL)
 
-    def _get_vars(self, varname):
+    def _get_vars(self, varname: np.ndarray) -> np.ndarray:
         if self.n < self.history:
             return varname[0:self.n]
         else:
             return varname[[(self.n + i) % self.history for i in range(self.history)]]
 
-    def get_u(self):
+    def get_u(self) -> np.ndarray:
         return self._get_vars(self.u)
 
-    def get_x(self):
+    def get_x(self) -> np.ndarray:
         return self._get_vars(self.x)
 
-    def get_y(self):
+    def get_y(self) -> np.ndarray:
         return self._get_vars(self.y)
 
     def _step(self) -> (int, int):
@@ -176,7 +180,7 @@ class Neuron:
         self.n += 1
         return cur, nxt
 
-    def cycle(self, stimulus: np.ndarray = None):
+    def cycle(self, stimulus: np.ndarray = None) -> np.ndarray:
         """
         Execute a single pass through the echo state network potentially taking in some stimulus.
         There is no learning when using this method. To train your ESN, please use <code>force_learn</code>.
