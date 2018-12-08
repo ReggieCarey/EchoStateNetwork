@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fa1229c-d8c5-463d-827f-28ae98501793" name="Default Changelist" comment="">
+    <list default="true" id="5fa1229c-d8c5-463d-827f-28ae98501793" name="Default Changelist" comment="code clean up">
+      <change beforePath="$PROJECT_DIR$" beforeDir="false" afterPath="$PROJECT_DIR$" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ESNeuron/Neuron.py" beforeDir="false" afterPath="$PROJECT_DIR$/ESNeuron/Neuron.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ESNeuron/esn_parameters.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ESNeuron/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ESNeuron/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../matlab" beforeDir="false" afterPath="$PROJECT_DIR$/../matlab" afterDir="false" />
     </list>
     <ignored mask="*.png" />
@@ -54,14 +53,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ESNeuron/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="46">
-              <caret line="44" column="16" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
+            <state relative-caret-position="1014">
+              <caret line="66" column="31" selection-start-line="66" selection-start-column="31" selection-end-line="66" selection-end-column="31" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="406">
+              <caret line="106" column="9" selection-start-line="106" selection-start-column="9" selection-end-line="106" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -90,6 +98,7 @@
       <find>stimulus</find>
       <find>default_stimulus</find>
       <find>self.alpha</find>
+      <find>png</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -104,6 +113,7 @@
         <option value="$PROJECT_DIR$/ESNeuron/Untitled.ipynb" />
         <option value="$PROJECT_DIR$/ESNeuron/Neuron.py" />
         <option value="$PROJECT_DIR$/ESNeuron/main.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -120,12 +130,27 @@
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
       <autoscrollFromSource ProjectPane="true" />
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scope">
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+          <expand>
+            <path>
+              <item name="EchoStateNetwork" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+            </path>
+            <path>
+              <item name="EchoStateNetwork" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="ESNeuron" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -262,7 +287,7 @@
       <option name="presentableId" value="Default" />
       <updated>1543970278219</updated>
       <workItem from="1543970280732" duration="57897000" />
-      <workItem from="1544289108714" duration="14295000" />
+      <workItem from="1544289108714" duration="14853000" />
     </task>
     <task id="LOCAL-00001" summary="documentation cleanup">
       <created>1544292142598</created>
@@ -282,7 +307,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="72192000" />
+    <option name="totallyTimeSpent" value="72750000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="6" />
@@ -303,9 +328,9 @@
       <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49928468" weight="0.32939634" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.42203146" side_tool="true" weight="0.24015749" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49928468" weight="0.32939634" />
-      <window_info anchor="bottom" id="Python Console" order="12" sideWeight="0.5758226" visible="true" weight="0.24015749" />
-      <window_info anchor="bottom" x="0" y="0" width="310" height="677" id="Documentation" order="13" sideWeight="0.4241774" side_tool="true" visible="true" weight="0.24015749" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.4985694" visible="true" weight="0.32939634" />
+      <window_info anchor="bottom" id="Python Console" order="12" sideWeight="0.5758226" weight="0.24015749" />
+      <window_info anchor="bottom" x="0" y="0" width="310" height="677" id="Documentation" order="13" sideWeight="0.50143063" side_tool="true" visible="true" weight="0.32939634" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -343,7 +368,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="documentation cleanup" />
-    <option name="LAST_COMMIT_MESSAGE" value="documentation cleanup" />
+    <MESSAGE value="code clean up" />
+    <option name="LAST_COMMIT_MESSAGE" value="code clean up" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file:///usr/local/lib/python3.6/site-packages/numpy/core/fromnumeric.py">
@@ -417,22 +443,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ESNeuron/Neuron.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="76" column="26" lean-forward="true" selection-start-line="76" selection-start-column="26" selection-end-line="76" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#54#2214#1" expanded="true" />
-            <element signature="e#7009#7172#0" expanded="true" />
-            <element signature="e#7439#7549#0" expanded="true" />
-            <element signature="e#7623#8545#0" expanded="true" />
-            <element signature="e#8640#11139#0" expanded="true" />
-            <element signature="e#8426#10237#1" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -457,13 +467,36 @@
     <entry file="file://$PROJECT_DIR$/ESNeuron/esn.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/ESNeuron/Neuron.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="461">
+          <caret line="76" column="26" lean-forward="true" selection-start-line="76" selection-start-column="26" selection-end-line="76" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#54#2214#1" expanded="true" />
+            <element signature="e#7009#7172#0" expanded="true" />
+            <element signature="e#7439#7549#0" expanded="true" />
+            <element signature="e#7623#8545#0" expanded="true" />
+            <element signature="e#8640#11139#0" expanded="true" />
+            <element signature="e#8426#10237#1" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ESNeuron/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="46">
-          <caret line="44" column="16" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
+        <state relative-caret-position="1014">
+          <caret line="66" column="31" selection-start-line="66" selection-start-column="31" selection-end-line="66" selection-end-column="31" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="106" column="9" selection-start-line="106" selection-start-column="9" selection-end-line="106" selection-end-column="9" />
         </state>
       </provider>
     </entry>
