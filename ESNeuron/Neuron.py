@@ -13,7 +13,7 @@ class Neuron:
     $$ a_{out} = \sigma(\vec{a_{in}} \cdot \vec{w} + b) $$
 
     The basic problem with this is that it is static. It completely misses the dynamics possible in a real neuron and
-    does now allow for spatio temporal receptive field mapping without playing with approximations of time,
+    does now allow for spatiotemporal receptive field mapping without playing with approximations of time,
     etc. And even then, the output really does not vary based on the input to the system.
 
     I propose an ESNeuron.  The ESNeuron gets its name from echo state networks.  In an ESNeuron multiple inputs
@@ -21,7 +21,7 @@ class Neuron:
     ESNeuron the inputs are fully connected to a dynamical pool.  If we assume learning or processing occurs in the
     dendritic arbor of a neuron, then the dynamical pool is an analog to the dendritic arbor.  We can likewise assume
     that the axon hillock is the integration point in a neuron. In this case, our ESNeuron performs a linear
-    transformation with the reservior resulting in a value taken to be the ESNeuron activation.
+    transformation with the reservoir resulting in a value taken to be the ESNeuron activation.
 
     The final step in the system is to connect the output via fixed weights to the reservoir.  Because we're passing
     through an echo state network, our output is not entirely driven by the input to the system but works with inputs

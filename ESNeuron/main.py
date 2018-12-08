@@ -74,6 +74,4 @@ def main():
 
 if __name__ == "__main__":
     np.seterr(all="raise")
-    # print("Starting")
     main()
-    # print("Done")
