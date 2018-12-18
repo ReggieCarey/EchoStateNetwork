@@ -2,7 +2,7 @@ from functools import partial
 
 import matplotlib.pyplot as plt
 import numpy as np
-
+import sys
 from Neuron import Neuron
 
 
@@ -173,15 +173,18 @@ def train(neuron):
 
 
 def main():
-    neuron = load_model()
-
-    evaluate(neuron, "esn0_Start{}.png")
-    train(neuron)
-    evaluate(neuron, "esn0_End{}.png")
+    try:
+        neuron = load_model()
+        evaluate(neuron, "esn0_Start{}.png")
+        train(neuron)
+        evaluate(neuron, "esn0_End{}.png")
+        return 0
+    except Exception as erc:
+        print("Exception Encountered ", erc)
+        return 1
 
 
 if __name__ == "__main__":
     np.seterr(all="raise")
     np.set_printoptions(precision=4, linewidth=512, floatmode='fixed', suppress=True, sign=' ')
-
-    main()
+    sys.exit(main())
