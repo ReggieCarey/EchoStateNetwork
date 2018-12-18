@@ -36,23 +36,13 @@ class Neuron:
 
     __version__ = "0.9"
 
-    @classmethod
-    def load(cls):
-        try:
-            with open("esn_parameters.pkl", "rb") as inp:
-                x = pickle.load(inp)
-            assert isinstance(x, cls), "Pickled object is not a {}".format(cls)
-            return x
-        except FileNotFoundError:
-            return None
-
     def __init__(self,
-                 numInputs: int = 0,
-                 numOutputs: int = 1,
-                 numReservoir: int = 0,
+                 numInputs: int,
+                 numReservoir: int,
+                 numOutputs: int,
+                 pct: float,
+                 alpha: float,
                  *,
-                 pct: float = 1.0,
-                 alpha: float = 1.0,
                  f: callable = None,
                  g: callable = None,
                  feedback: bool = True
@@ -61,79 +51,96 @@ class Neuron:
         Initialize the neuron with the architecture defined by the parameters
 
         :param numInputs: The number of connections from precursor neurons to this neuron
-        :param numOutputs: The number of connections to the internal integrator from the reservoir
         :param numReservoir: The number of nodes in the internal echo state network
+        :param numOutputs: The number of connections to the internal integrator from the reservoir
         :param pct: The probability of a connection between nodes of the echo state network
         :param alpha: float: measure of speed of reservoir lower values faster 0 < alpha <= 1
         :param f: callable: default Neuron.tanh
         :param g: callable: default Neuron.identity
         :param feedback: bool: default True - feed outputs back into the reservoir
         """
+        assert 0 <= numInputs, "We restrict the number of inputs to be non-negative"
+        assert 0 < numReservoir, "We restrict the number of reservoir nodes to be strictly positive"
+        assert 0 < numOutputs, "We restrict the number of outputs to be strictly positive"
 
         assert 0 < pct <= 1, "Probability of connection must be between 0 exclusive and 1 inclusive"
-        assert numInputs >= 0, "We restrict the number of inputs to be non-negative"
-        assert numOutputs > 0, "We restrict the number of outputs from the reservoir to be strictly positive"
+        # assert 0 < alpha < 1, "alpha - must be 0 < alpha < 1"
 
-        self.alpha = alpha
+        assert callable(f), "f must be a function(arg) or None"
+        assert callable(g), "f must be a function(arg) or None"
+
+        # These parameters are sufficient to describe the echo state network dimensions
+        self._numInputs = numInputs  # I  K
+        self._numReservoir = numReservoir  # H  N
+        self._numOutputs = numOutputs  # O  L
+
         self.f = f if f is not None else Neuron.tanh
         self.g = g if g is not None else Neuron.identity
-        self.pct = pct
-        self.feedback = feedback
 
-        self.K = numInputs
-        self.N = numReservoir
-        self.L = numOutputs
+        # Construct the Input Matrix that transforms the input vector from length I to length H
+        self.Win = np.random.standard_normal((numReservoir, numInputs))
 
-        self.default_stimulus = np.zeros(self.K)
-        self.default_response = np.zeros(self.L)
+        # Contrsuct the Reservoir Matrix that transforms Hidden to Hidden.
+        self.W = np.eye(numReservoir)
+        self.W[np.random.rand(numReservoir, numReservoir) < pct] = 1
+        self.W[self.W > 0] = np.random.standard_normal((numReservoir, numReservoir))[self.W > 0]
+        self.W = self.W * alpha / np.max(np.abs(np.linalg.eig(self.W)[0]))
 
-        # The number of interations to retain in u, y and u.
-        self.history = 1000
+        # Construct the feedback network
+        self.Wfb = np.random.randn(numReservoir, numOutputs) * int(feedback)
 
-        self.u = np.zeros((self.history, self.K))
-        self.x = np.zeros((self.history, self.N))
-        self.y = np.zeros((self.history, self.L))
-        self.d = np.zeros((self.history, self.L))
+        # Construct the output network
+        self._Wout = np.random.standard_normal((numOutputs, numReservoir + numInputs))
+        # self._Wout = np.zeros(shape=(numOutputs, numReservoir + numInputs))
 
-        # Calculate the fixed random weights of the input layer
-        self.W_in = np.random.randn(self.N, self.K)
+        # Construct the basic activation vectors (neurons)
+        self.x = np.random.uniform(-1, 1, size=(numReservoir, 1))
+        self.y = np.random.uniform(-1, 1, size=(numOutputs, 1))
+        self.z = np.random.uniform(-1, 1, size=(numReservoir + numInputs, 1))
 
-        # Calculate the fixed random weights and connectivity of the reservoir layer
-        while True:
-            numConnected = int(np.ceil(self.N ** 2 * self.pct))
-            connectionOrder = np.random.choice(self.N ** 2, numConnected, False)
-            self.W = np.zeros(self.N ** 2)
-            self.W[connectionOrder] = np.random.randn(numConnected)
-            self.W = self.W.reshape((self.N, self.N))
-            eigval, _ = np.linalg.eig(self.W)
-            spectral_radius = np.max(np.abs(eigval))
-            try:
-                self.W = self.W / (self.alpha * spectral_radius)
-                break
-            except FloatingPointError as erc:
-                print("connectionOrder", connectionOrder)
-                print("eigval", np.abs(eigval))
-                print(erc, ": trying again")
+        # number of iterations of no input (zero vector) used internally as setup and during training
+        self._washout = 500
 
-        # Calculate the fixed random weights of the feedback layer
-        self.W_back = np.random.randn(self.N, self.L) * int(feedback)
+        # make sure the network has settled prior to finishing initialization
+        self.forget()
+        # self.settle(self.washout)
 
-        # Calculate the variable weights of the output layer
-        self.W_out = np.random.randn(self.L, self.K + self.N)
+    @property
+    def washout(self):
+        return self._washout
 
-        # Set up the matrix holding the precursor values of the output layer
-        self.z = np.zeros((self.history, self.K + self.N))
+    @washout.setter
+    def washout(self, washout):
+        self._washout = washout
 
-        # Set up the variable used to count number of iterations
-        self.n = 0  # used to reference states
+    @property
+    def Wout(self) -> np.ndarray:
+        return self._Wout
+
+    @Wout.setter
+    def Wout(self, Wout: np.ndarray) -> None:
+        assert self._Wout.shape == Wout.shape, "Cannot set weights. The dimensions do not match"
+        self._Wout = Wout.copy()
+
+    @property
+    def numInputs(self):
+        return self._numInputs
+
+    @property
+    def numReservoir(self):
+        return self._numReservoir
+
+    @property
+    def numOutputs(self):
+        return self._numOutputs
 
     @staticmethod
     def logistic(z: np.ndarray) -> np.ndarray:
         return 1 / (2 + np.expm1(-z))
 
     @staticmethod
-    def tanh(z: np.ndarray) -> np.ndarray:
-        return np.tanh(z)
+    def tanh(z: np.ndarray, *args, **kwargs) -> np.ndarray:
+        return np.tanh(z, *args, **kwargs)
 
     @staticmethod
     def softplus(z: np.ndarray) -> np.ndarray:
@@ -155,60 +162,77 @@ class Neuron:
     def identity(z: np.ndarray) -> np.ndarray:
         return z
 
+    @classmethod
+    def load(cls):
+        try:
+            with open("esn_parameters.pkl", "rb") as inp:
+                x = pickle.load(inp)
+            assert isinstance(x, cls), "Pickled object is not a {}".format(cls)
+            assert x.__version__ == cls.__version__, "Version mismatch - pkl file is out of date"
+            return x
+        except FileNotFoundError:
+            return None
+
     def save(self) -> None:
         with open("esn_parameters.pkl", "wb") as out:
             pickle.dump(self, out, pickle.HIGHEST_PROTOCOL)
 
-    def _get_vars(self, varname: np.ndarray) -> np.ndarray:
-        if self.n < self.history:
-            return varname[0:self.n]
-        else:
-            return varname[[(self.n + i) % self.history for i in range(self.history)]]
-
-    def get_u(self) -> np.ndarray:
-        return self._get_vars(self.u)
-
-    def get_x(self) -> np.ndarray:
-        return self._get_vars(self.x)
-
-    def get_y(self) -> np.ndarray:
-        return self._get_vars(self.y)
-
-    def _step(self) -> (int, int):
-        cur = self.n % self.history
-        nxt = (cur + 1) % self.history
-        self.n += 1
-        return cur, nxt
-
-    def cycle(self, stimulus: np.ndarray = None) -> np.ndarray:
+    def forget(self):
         """
-        Execute a single pass through the echo state network potentially taking in some stimulus.
-        There is no learning when using this method. To train your ESN, please use <code>force_learn</code>.
-        :param stimulus: np.ndarray: a tensor containing an input the ESN.
-        :return: the current output vector
+        Forget any prior learning by zeroing the output weight matrix and then running the network with
+        no input for a <washout> number of steps.
+        :return: None
         """
-        # We keep track of each step we take for <history> steps - wrapping around in that buffer as necessary
-        cur, nxt = self._step()
-        stimulus = self.default_stimulus if stimulus is None else stimulus
+        # Zero the output matrix and then let the network settle for the washout period
+        self._Wout = np.zeros(shape=self._Wout.shape)
+        self.settle(self.washout)
 
-        self.u[nxt] = stimulus
+    def settle(self, count: int) -> None:
+        """
+        Cause the network to run <count> steps with no input.  This is intended to remove prior input traces
+        from the reservoir prior to training or when ever a clean slate is desired. The number of steps <count>
+        really should be computed based on the value of alpha - the spectral radius of the Reservoir.
+        :param count: int; The number of cycles to run the ESN with no input.
+        :return: None
+        """
 
-        self.x[nxt] = self.f(
-            np.matmul(self.W, self.x[cur]) +
-            np.matmul(self.W_in, self.u[nxt]) +
-            np.matmul(self.W_back, self.y[cur]))
+        def zeros(_: int):
+            return np.zeros((self.numInputs, 1))
 
-        self.z[cur] = np.concatenate((self.x[cur], self.u[cur]))
-        self.y[cur] = self.g(np.matmul(self.W_out, self.z[cur]))
+        self.cycle(1, count, zeros)
 
-        return self.y[cur]
-
-    def force_learn(self, stimulus: np.ndarray = None, response: np.ndarray = None):
+    def cycle(self, t0: int, tn: int, f_in: callable(int)) -> (np.ndarray, np.ndarray, np.ndarray):
         """
         (1) x(n+1) = f(W * x(n) + Win * u(n+1) + Wfb * y(n))
+            z(n) = [x(n); u(n)]
+        (2) y(n) = g(Wout * z(n))
 
-        z(n) = [x(n); u(n)]
+        Execute a single pass through the echo state network potentially taking in some stimulus.
+        There is no learning when using this method. To train your ESN, please use <code>force_learn</code>.
+        :param t0: int: Starting index passed to f_teach to retrieve the t0'th teaching pair
+        :param tn: int: Ending index passed to f_teach to retrieve the tn'th teaching pair
+        :param f_in: callable(t: int) -> np.array a function that returns the network input at time t
+        :return: the current output vector
+        """
+        assert t0 <= tn, "Cannot observe backwards through time. tn must not be less than t0"
 
+        nmax = tn - t0 + 1
+        u = None
+
+        for t in range(nmax):
+            u = f_in(t0 + t)  # retrieve the next input pattern
+            self.x = self.f((self.W @ self.x) + (self.Win @ u) + (self.Wfb @ self.y))
+            self.z = np.concatenate((self.x, u))
+            self.y = self.g(self._Wout @ self.z)
+
+        return u, self.x, self.y, self.z
+
+    def force_learn(self, t0: int, tn: int, f_in: callable(int), f_out: callable(int)) -> None:
+        """
+        Execute a single forced learning phase taking stimulus and desired response into consideration.
+
+        (1) x(n+1) = f(W * x(n) + Win * u(n+1) + Wfb * y(n))
+            z(n) = [x(n); u(n)]
         (2) y(n) = g(Wout * z(n))
 
         Learning equations. In the state harvesting stage of the training, the ESN is driven by an input sequence
@@ -225,29 +249,34 @@ class Neuron:
         (denoted by ⋅†) of S :
 
         (3) Wout = (S†D)′
+             S = z(t0:tn)
+             D = y(t0:tn)
+             Wout = np.matmul(np.linalg.pinv(S), D).T
 
         which is an offline algorithm (the prime denotes matrix transpose). Online adaptive methods known from linear
         signal processing can also be used to compute output weights (Jaeger 2003).
 
-        Execute a single forced learning phase taking stimulus and desired response into consideration.
-        :param stimulus: np.ndarray: an input structure fed
-        :param response: np.ndarray: the desired response for the given input
+        A note on the function f_teach.  f_teach(t) should return a tuple of functions where the first
+        of the tuple, when called returns the t'th input pattern and the second tuple, when called returns
+        the t'th target pattern.  These returned functions take no parameters and each returns a vector.
+
+        :param t0: int: Starting index passed to f_teach to retrieve the t0'th teaching pair
+        :param tn: int: Ending index passed to f_teach to retrieve the tn'th teaching pair
+        :param f_in: callable(t: int) -> np.array a function that returns the network input at time t
+        :param f_out: callable(t: int) -> np.array a function that returns the target output at time t
         :return:
         """
-        # We keep track of each step we take for <history> steps - wrapping around in that buffer as necessary
-        cur, nxt = self._step()
-        stimulus = self.default_stimulus if stimulus is None else stimulus
-        response = self.default_response if response is None else response
+        assert t0 <= tn, "Cannot train backwards through time. tn must not be less than t0"
 
-        self.u[nxt] = stimulus
-        self.d[nxt] = response
+        nmax = tn - t0 + 1
 
-        self.x[nxt] = self.f(
-            np.matmul(self.W, self.x[cur]) +
-            np.matmul(self.W_in, self.u[nxt]) +
-            np.matmul(self.W_back, self.y[cur]))
+        S = np.empty(shape=(nmax, self.numReservoir + self.numInputs))
+        D = np.empty(shape=(nmax, self.numOutputs))
 
-        self.z[cur] = np.concatenate((self.x[cur], self.u[cur]))
-        self.y[cur] = self.g(np.matmul(self.W_out, self.z[cur]))
+        for t in range(nmax):
+            self.cycle(t0 + t, t0 + t, f_in)
+            self.y = f_out(t0 + t)
+            S[t] = self.z.copy().reshape(-1)
+            D[t] = self.y.copy().reshape(-1)
 
-        return self.y[cur]
+        self._Wout = (np.linalg.pinv(S) @ D).T
