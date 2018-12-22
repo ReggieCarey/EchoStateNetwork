@@ -1,9 +1,44 @@
 import pickle
+from typing import Tuple, Callable, Sequence
 
 import numpy as np
 
+__all__ = ["Neuron", "Callback"]
 
-class Neuron:
+Callback = Callable[[float], np.ndarray]
+
+
+class BaseNeuron:
+    @staticmethod
+    def logistic(z: np.ndarray) -> np.ndarray:
+        return 1 / (2 + np.expm1(-z))
+
+    @staticmethod
+    def tanh(z: np.ndarray, *args, **kwargs) -> np.ndarray:
+        return np.tanh(z, *args, **kwargs)
+
+    @staticmethod
+    def softplus(z: np.ndarray) -> np.ndarray:
+        return np.log(np.expm1(z) + 2)
+
+    @staticmethod
+    def relu(z: np.ndarray) -> np.ndarray:
+        return np.array([max(0, zz) for zz in z])
+
+    @staticmethod
+    def relu6(z: np.ndarray) -> np.ndarray:
+        return np.array([min(max(zz, 0), 6) for zz in z])
+
+    @staticmethod
+    def binary(z: np.ndarray) -> np.ndarray:
+        return np.array([[-1, 1][zz > 0] for zz in z])
+
+    @staticmethod
+    def identity(z: np.ndarray) -> np.ndarray:
+        return z
+
+
+class Neuron(BaseNeuron):
     """
     In the framework of the Echo State Neuron, an individual neuron is vastly more complicated and capable than
     traditional neural network nodes.  In the traditional case the dot product of an input vector and a learned
@@ -33,7 +68,6 @@ class Neuron:
 
     Given the above there are several parameters that decide the ESNeuron:
     """
-
     __version__ = "0.9"
 
     def __init__(self,
@@ -43,10 +77,10 @@ class Neuron:
                  pct: float,
                  alpha: float,
                  *,
-                 f: callable = None,
-                 g: callable = None,
+                 f: Callable[[np.ndarray], np.ndarray] = BaseNeuron.tanh,
+                 g: Callable[[np.ndarray], np.ndarray] = BaseNeuron.identity,
                  feedback: bool = True
-                 ) -> None:
+                 ):
         """
         Initialize the neuron with the architecture defined by the parameters
 
@@ -74,13 +108,14 @@ class Neuron:
         self._numReservoir = numReservoir  # H  N
         self._numOutputs = numOutputs  # O  L
 
-        self.f = f if f is not None else Neuron.tanh
-        self.g = g if g is not None else Neuron.identity
+        # Store the functions used to define how the neuron operates
+        self.f = f
+        self.g = g
 
         # Construct the Input Matrix that transforms the input vector from length I to length H
         self.Win = np.random.standard_normal((numReservoir, numInputs))
 
-        # Contrsuct the Reservoir Matrix that transforms Hidden to Hidden.
+        # Construct the Reservoir Matrix that transforms Hidden to Hidden.
         self.W = np.eye(numReservoir)
         self.W[np.random.rand(numReservoir, numReservoir) < pct] = 1
         self.W[self.W > 0] = np.random.standard_normal((numReservoir, numReservoir))[self.W > 0]
@@ -91,6 +126,7 @@ class Neuron:
 
         # Construct the output network
         self._Wout = np.random.standard_normal((numOutputs, numReservoir + numInputs))
+        self.baseWout = self._Wout.copy()
         # self._Wout = np.zeros(shape=(numOutputs, numReservoir + numInputs))
 
         # Construct the basic activation vectors (neurons)
@@ -118,7 +154,7 @@ class Neuron:
         return self._Wout
 
     @Wout.setter
-    def Wout(self, Wout: np.ndarray) -> None:
+    def Wout(self, Wout: np.ndarray):
         assert self._Wout.shape == Wout.shape, "Cannot set weights. The dimensions do not match"
         self._Wout = Wout.copy()
 
@@ -134,34 +170,6 @@ class Neuron:
     def numOutputs(self):
         return self._numOutputs
 
-    @staticmethod
-    def logistic(z: np.ndarray) -> np.ndarray:
-        return 1 / (2 + np.expm1(-z))
-
-    @staticmethod
-    def tanh(z: np.ndarray, *args, **kwargs) -> np.ndarray:
-        return np.tanh(z, *args, **kwargs)
-
-    @staticmethod
-    def softplus(z: np.ndarray) -> np.ndarray:
-        return np.log(np.expm1(z) + 2)
-
-    @staticmethod
-    def relu(z: np.ndarray) -> np.ndarray:
-        return np.array([max(0, zz) for zz in z])
-
-    @staticmethod
-    def relu6(z: np.ndarray) -> np.ndarray:
-        return np.array([min(max(zz, 0), 6) for zz in z])
-
-    @staticmethod
-    def binary(z: np.ndarray) -> np.ndarray:
-        return np.array([[-1, 1][zz > 0] for zz in z])
-
-    @staticmethod
-    def identity(z: np.ndarray) -> np.ndarray:
-        return z
-
     @classmethod
     def load(cls):
         try:
@@ -173,7 +181,7 @@ class Neuron:
         except FileNotFoundError:
             return None
 
-    def save(self) -> None:
+    def save(self):
         with open("esn_parameters.pkl", "wb") as out:
             pickle.dump(self, out, pickle.HIGHEST_PROTOCOL)
 
@@ -183,11 +191,13 @@ class Neuron:
         no input for a <washout> number of steps.
         :return: None
         """
+
         # Zero the output matrix and then let the network settle for the washout period
-        self._Wout = np.zeros(shape=self._Wout.shape)
+        # self._Wout = np.zeros(shape=self._Wout.shape)
+        self._Wout = self.baseWout.copy()
         self.settle(self.washout)
 
-    def settle(self, count: int) -> None:
+    def settle(self, count: int):
         """
         Cause the network to run <count> steps with no input.  This is intended to remove prior input traces
         from the reservoir prior to training or when ever a clean slate is desired. The number of steps <count>
@@ -196,12 +206,16 @@ class Neuron:
         :return: None
         """
 
-        def zeros(_: int):
+        def fin(_: float) -> np.ndarray:
+            """function returning zero vector size numInputs"""
             return np.zeros((self.numInputs, 1))
 
-        self.cycle(1, count, zeros)
+        self.cycle(1, count, [fin for _ in range(count)])
 
-    def cycle(self, t0: int, tn: int, f_in: callable(int)) -> (np.ndarray, np.ndarray, np.ndarray):
+    def cycle(self,
+              t0: int,
+              tn: int,
+              f_in: Sequence[Callback]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
         (1) x(n+1) = f(W * x(n) + Win * u(n+1) + Wfb * y(n))
             z(n) = [x(n); u(n)]
@@ -211,7 +225,7 @@ class Neuron:
         There is no learning when using this method. To train your ESN, please use <code>force_learn</code>.
         :param t0: int: Starting index passed to f_teach to retrieve the t0'th teaching pair
         :param tn: int: Ending index passed to f_teach to retrieve the tn'th teaching pair
-        :param f_in: callable(t: int) -> np.array a function that returns the network input at time t
+        :param f_in: callable(t: float) -> np.array a function that returns the network input at time t
         :return: the current output vector
         """
         assert t0 <= tn, "Cannot observe backwards through time. tn must not be less than t0"
@@ -220,14 +234,18 @@ class Neuron:
         u = None
 
         for t in range(nmax):
-            u = f_in(t0 + t)  # retrieve the next input pattern
+            u = f_in[t](t0 + t)  # retrieve the next input pattern
             self.x = self.f((self.W @ self.x) + (self.Win @ u) + (self.Wfb @ self.y))
             self.z = np.concatenate((self.x, u))
             self.y = self.g(self._Wout @ self.z)
 
         return u, self.x, self.y, self.z
 
-    def force_learn(self, t0: int, tn: int, f_in: callable(int), f_out: callable(int)) -> None:
+    def learn(self,
+              t0: int,
+              tn: int,
+              f_in: Sequence[Callback],
+              f_out: Sequence[Callback]) -> Tuple[np.ndarray, np.ndarray]:
         """
         Execute a single forced learning phase taking stimulus and desired response into consideration.
 
@@ -273,10 +291,27 @@ class Neuron:
         S = np.empty(shape=(nmax, self.numReservoir + self.numInputs))
         D = np.empty(shape=(nmax, self.numOutputs))
 
+        print("Learning sequence of {} inputs".format(nmax))
         for t in range(nmax):
-            self.cycle(t0 + t, t0 + t, f_in)
-            self.y = f_out(t0 + t)
-            S[t] = self.z.copy().reshape(-1)
-            D[t] = self.y.copy().reshape(-1)
+            # self.cycle(t0 + t, t0 + t, f_in)
 
-        self._Wout = (np.linalg.pinv(S) @ D).T
+            u = f_in[t](t0 + t)  # retrieve the next input pattern
+            y = f_out[t](t0 + t)  # retrieve the next output pattern
+
+            reservoir = (self.W @ self.x)
+            inputData = (self.Win @ u)
+            feedBack = (self.Wfb @ self.y)
+
+            self.x = self.f(reservoir + inputData + feedBack)
+            self.z = np.concatenate((self.x, u))
+            self.y = self.g(self._Wout @ self.z)
+
+            # Teacher Forcing
+            self.y = y
+
+            # Save our state and target outputs
+            S[t] = self.z.copy().reshape(-1)
+            D[t] = y.copy().reshape(-1)
+
+        self._Wout += (np.linalg.pinv(S) @ D).T
+        return S, D
